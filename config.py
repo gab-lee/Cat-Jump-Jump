@@ -1,5 +1,7 @@
 WINDOW_TITLE = "Cat Jump Jump" #application title 
 W, H, X, Y = 1280, 720, 300,100 #application size
+ASPECT_W = 16
+ASPECT_H = 9
 FPS = 60
 FRAME_MS = int(1000/FPS)
 
@@ -14,10 +16,6 @@ def jump(event):
     canvas.coords(cat, 200,400,400,600)
     print("jumping")
 root.bind("<space>",jump)
-
-#create 60FPS game 
-global x 
-global y 
 
 #scaling window 
 def on_resize(event):
@@ -39,11 +37,5 @@ def update():
 
 
 
-#Game setup
-root = tk.Tk()
-root.title("Cat jump jump")
-root.geometry(f"{W}x{H}+{L}+{R}")
-canvas = tk.Canvas(root, width = W, height=H, bg="white")
-canvas.pack(fill="both", expand=True)
 
 update() """

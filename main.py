@@ -21,16 +21,24 @@ for key in config.QUIT_KEY:
     root.bind(key, quit_game)
 
 #resize
+def enable_resize():
+    root.bind("<Configure>", on_resize)
+
 def on_resize(event):
-    W = event.width
-    H = event.height
-    canvas.coords(ground,entities.ground_coords(W,H))
+    w = event.width
+    h = event.height
+    desired_h = int(w * config.ASPECT_H / config.ASPECT_W)
+    
+    if h != desired_h:
+        root.geometry(f"{w}x{desired_h}")
+
+    canvas.coords(ground,entities.ground_coords(w,h))
 
 #Refresh
 def update():
     pass
 
 
+root.after(100,enable_resize)
 root.after(config.FRAME_MS, update)
-root.bind("<Configure>", on_resize)
 root.mainloop()
