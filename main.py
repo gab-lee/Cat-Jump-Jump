@@ -1,43 +1,19 @@
 import tkinter as tk
+from entities import Cat
+import config
 
-W, H, L, R = 1280, 720, 300, 80
+player = Cat(100,200)
 
-#Game setup
 root = tk.Tk()
-root.title("Cat jump jump")
-root.geometry(f"{W}x{H}+{L}+{R}")
-canvas = tk.Canvas(root, width = W, height=H, bg="white")
-canvas.pack(fill="both", expand=True)
+root.title(config.WINDOW_TITLE)
+root.geometry(f"{config.W}x{config.H}")
 
-cat = canvas.create_oval(0.1*W,0.8*H,0.3*W,0.6*H)
-ground = canvas.create_rectangle(0,600,1200,800, fill="Blue")
-
-#'q': quit game
+#Key binding 
 def quit_game(event):
     root.destroy()
-root.bind("q", quit_game)
 
-#'space': jump
-def jump(event):
-    canvas.coords(cat, 200,400,400,600)
-    print("jumping")
-root.bind("<space>",jump)
-
-#scaling window 
-def on_resize(event):
-    width = event.width
-    height = event.height
-    canvas.coords(ground, 0,0.8*height,width, height)
-    canvas.coords(cat, 0.1*width,0.8*height,0.2*width, 0.7*height)
-    print(width, height)
-
-root.bind("<Configure>", on_resize)
-
-
-
-
-
+for key in config.QUIT_KEY:
+    root.bind(key, quit_game)
 
 
 root.mainloop()
-
