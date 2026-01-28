@@ -1,5 +1,7 @@
 WINDOW_TITLE = "Cat Jump Jump" #application title 
-W, H = 1280, 720 #application size
+W, H, X, Y = 1280, 720, 300,100 #application size
+FPS = 60
+FRAME_MS = int(1000/FPS)
 
 #Keys
 QUIT_KEY = ["q","<Escape>"]
@@ -7,11 +9,6 @@ JUMP_KEY = "<space>"
 
 
 """ 
-#'q': quit game
-def quit_game(event):
-    root.destroy()
-root.bind("q", quit_game)
-
 #'space': jump
 def jump(event):
     canvas.coords(cat, 200,400,400,600)
