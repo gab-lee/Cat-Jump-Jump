@@ -45,7 +45,7 @@ class Game:
         self.canvas.coords(self.cat.sprite_id, self.cat.x * self.cat.size, self.cat.y * self.cat.size)
         self.ground.size = w/config.W
         self.canvas.coords(self.ground_display,self.ground.coords())
-        #self.canvas.obstacles(ground,groudn coords)
+        self.obstacles.obstacle_size = w/config.W
 
     def load_gif_frames(self,path, scale=1.0):
         img = Image.open(path)

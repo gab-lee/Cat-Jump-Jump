@@ -16,12 +16,13 @@ class ObstacleManager:
         self.obstacles = [] #list of dictionaries of obstacles
         self.spawn_min_rate = 2000
         self.spawn_max_rate = 1000
+        self.obstacle_size = 1
     def spawn(self,canvas,spawn_x,ground_y):
         h = random.randint(40,90)
         w = random.randint(25,50)
         speed = 5
         obs = entities.Obstacle(spawn_x, ground_y, w, h, speed)
-        obs_id = canvas.create_rectangle(*obs.coords(), fill=config.obstacle_colour)
+        obs_id = canvas.create_rectangle(*obs.coords(self.obstacle_size), fill=config.obstacle_colour)
         self.obstacles.append({"obj": obs, "id": obs_id})
 
     def schedule_spawn(self,game: object):
@@ -34,6 +35,6 @@ class ObstacleManager:
     def update(self,canvas):
         for obstacle in self.obstacles:
             obstacle["obj"].move()
-            canvas.coords(obstacle["id"],*obstacle["obj"].coords())
+            canvas.coords(obstacle["id"],*obstacle["obj"].coords(self.obstacle_size))
     def clean_up(self):
         pass

@@ -44,11 +44,10 @@ class Obstacle:
         self.x = spawn_x
         self.y = ground_y
         self.speed = speed
-        self.size =1 
 
-    def coords(self):
+    def coords(self,size):
         base = (self.x, self.y-self.height, self.x+self.width, self.y)
-        return tuple(map(lambda v: v * self.size, base))
+        return tuple(map(lambda v: v * size, base))
     def move(self):
         self.x = self.x - self.speed 
 
