@@ -8,6 +8,13 @@ class Cat:
         self.isJumping = False
         self.size = 1
         self.radius = self.size * 50 
+        #animation
+        self.frames_run = []
+        self.frames_jump = []
+        self.frame_index = 0
+        self.frame_timer = 0.0
+        self.frame_interval = 0.08  # seconds per frame
+        self.sprite_id = None
     
     def coords(self):
         base = (self.x-self.radius, self.y-self.radius, self.x+self.radius, self.y+self.radius)

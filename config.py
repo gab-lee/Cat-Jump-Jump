@@ -14,7 +14,7 @@ JUMP_KEY = "<space>"
 
 #Physics constant 
 GRAVITY = 0.8 
-JUMP_VELOCITY = 14
+JUMP_VELOCITY = 20
 
 #Colour
 cat_colour = "black"

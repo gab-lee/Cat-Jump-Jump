@@ -1,4 +1,6 @@
 import tkinter as tk
+import os
+from PIL import Image, ImageTk
 import config
 import entities
 from game_logic import isOnGround, schedule_spawn, ObstacleManager
@@ -40,10 +42,27 @@ class Game:
             self.root.geometry(f"{w}x{desired_h}")
 
         self.cat.size = w/config.W
-        self.canvas.coords(self.cat_display,self.cat.coords())
+        self.canvas.coords(self.cat.sprite_id, self.cat.x * self.cat.size, self.cat.y * self.cat.size)
         self.ground.size = w/config.W
         self.canvas.coords(self.ground_display,self.ground.coords())
         #self.canvas.obstacles(ground,groudn coords)
+
+    def load_gif_frames(self,path, scale=1.0):
+        img = Image.open(path)
+        frames = []
+        i = 0
+        while True:
+            try:
+                img.seek(i)
+                frame = img.convert("RGBA").copy()  # define frame first
+                if scale != 1.0:
+                    w, h = frame.size
+                    frame = frame.resize((int(w * scale), int(h * scale)), Image.Resampling.NEAREST)
+                    frames.append(ImageTk.PhotoImage(frame))
+                i += 1
+            except EOFError:
+                break
+        return frames
     
     def update(self):
         if not self.running:
@@ -51,13 +70,22 @@ class Game:
         
         self.obstacles.update(self.canvas)
         self.cat.jumping(self.ground.height)
-        self.canvas.coords(self.cat_display,self.cat.coords())
+        self.cat.frame_timer += config.FRAME_MS / 1000.0
+        if self.cat.frame_timer >= self.cat.frame_interval and self.cat.frames_jump:
+            self.cat.frame_timer = 0.0
+            self.cat.frame_index = (self.cat.frame_index + 1) % len(self.cat.frames_jump)
+            self.canvas.itemconfig(self.cat.sprite_id, image=self.cat.frames_jump[self.cat.frame_index])
+        self.canvas.coords(self.cat.sprite_id, self.cat.x * self.cat.size, self.cat.y * self.cat.size)
         self.root.after(config.FRAME_MS,self.update)
 
     def create_player(self):
         #initialise player 
         self.cat = entities.Cat(120,500)
-        self.cat_display = self.canvas.create_oval(*self.cat.coords(), fill=config.cat_colour)
+        cat_jump_path = os.path.join(os.path.dirname(__file__), "assets", "cat_jump.gif")
+        self.cat.frames_jump = self.load_gif_frames(cat_jump_path,scale=4.0)
+        #self.cat.frames_run = self.load_gif_frames("assets/cat_run.gif")  # optional
+        self.cat.sprite_id = self.canvas.create_image(self.cat.x, self.cat.y, image=self.cat.frames_jump[0])
+
     
     def create_ground(self):
         #initialise ground
@@ -78,7 +106,6 @@ class Game:
 if __name__ == "__main__":
     game = Game()
     game.run()
-
 
 
 
