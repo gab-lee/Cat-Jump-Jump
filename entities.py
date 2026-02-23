@@ -23,6 +23,7 @@ class Cat:
     def jump(self,isOnGround: bool):
         if not isOnGround:
             return 
+        self.frame_index = 0 #reset frame
         self.isJumping = True 
         self.vertical_velocity = -config.JUMP_VELOCITY
     

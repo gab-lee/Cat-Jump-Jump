@@ -4,6 +4,9 @@ W, H, X, Y = 1280, 720, 300,100 #application size
 ASPECT_W = 16
 ASPECT_H = 9
 
+#Character size
+player_scale = 4.0
+
 #FPS
 FPS = 60
 FRAME_MS = int(1000/FPS) 
