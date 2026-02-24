@@ -1,6 +1,6 @@
 #Window size 
 WINDOW_TITLE = "Cat Jump Jump" #application title 
-W, H, X, Y = 1280, 720, 300,100 #application size
+W, H, X, Y = 1280, 720, 125,125 #application size
 ASPECT_W = 16
 ASPECT_H = 9
 
@@ -10,13 +10,15 @@ player_scale = 4.0
 #FPS
 FPS = 60
 FRAME_MS = int(1000/FPS) 
+frame_interval_running = 0.06
+frame_interval_jumping = 0.09
 
 #Keys
 QUIT_KEY = ["q","<Escape>"]
 JUMP_KEY = "<space>"
 
 #Physics constant 
-GRAVITY = 0.8 
+GRAVITY = 1.0
 JUMP_VELOCITY = 20
 
 #Colour

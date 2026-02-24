@@ -11,9 +11,10 @@ class Cat:
         #animation
         self.frames_run = []
         self.frames_jump = []
+        self.frames_lick = []
         self.frame_index = 0
         self.frame_timer = 0.0
-        self.frame_interval = 0.08  # seconds per frame
+        self.frame_interval = config.frame_interval_running  # seconds per frame
         self.sprite_id = None
     
     def coords(self):
@@ -29,10 +30,11 @@ class Cat:
     
     def jumping(self,ground_y):
         if not self.isJumping:
+            self.frame_interval = config.frame_interval_running
             return
+        self.frame_interval = config.frame_interval_jumping
         self.y += self.vertical_velocity
         self.vertical_velocity += config.GRAVITY        
-        print(self.y)
         if self.y + self.radius > ground_y :
             self.isJumping = False
             self.y = ground_y - self.radius
@@ -50,6 +52,19 @@ class Obstacle:
         return tuple(map(lambda v: v * size, base))
     def move(self):
         self.x = self.x - self.speed 
+
+    def isCollided(self,cat,size):
+        cx1,cy1,cx2,cy2 = cat.coords()
+        ox1,oy1,ox2,oy2 = self.coords(size)
+        return not (
+            ox2 < cx1 or  # obstacle left of cat
+            ox1 > cx2 or  # obstacle right of cat
+            oy2 < cy1 or  # obstacle above cat
+            oy1 > cy2     # obstacle below cat
+        )
+    def isOffScreen(self,canvas,size):
+        ox1,oy1,ox2,oy2 = self.coords(size)
+        return ox2 < 0
 
 class Ground:
     def __init__(self,width,height):

@@ -13,6 +13,9 @@ class Game:
         self.canvas = tk.Canvas(self.root)
         self.canvas.pack(fill="both", expand=True)
         self.running = True 
+        self.score = 0
+        self.score_text_id = None
+        self.score_text_id = self.canvas.create_text(config.W - 20, 20,text =f"Score: {self.score}",anchor="ne")
 
     def key_binding(self):
         #Quit Game
@@ -39,7 +42,7 @@ class Game:
         desired_h = int(w * config.ASPECT_H / config.ASPECT_W)
         
         if h != desired_h:
-            self.root.geometry(f"{w}x{desired_h}")
+            self.root.geometry(f"{w}x{desired_h}+{config.X}+{config.Y}")
 
         self.cat.size = w/config.W
         self.canvas.coords(self.cat.sprite_id, self.cat.x * self.cat.size, self.cat.y * self.cat.size)
@@ -68,24 +71,31 @@ class Game:
         if not self.running:
             return 
         
-        self.obstacles.update(self.canvas)
+        collided,passed = self.obstacles.update(self.canvas,self.cat)
+        self.score += passed
+        if collided:
+            print("collided")
+            self.running = False
         self.cat.jumping(self.ground.height)
         self.cat.frame_timer += config.FRAME_MS / 1000.0
-        if self.cat.frame_timer >= self.cat.frame_interval and self.cat.frames_jump:
-            frames = self.cat.frames_jump if self.cat.isJumping else self.cat.frames_run
+        frames = self.cat.frames_jump if self.cat.isJumping else self.cat.frames_run
+        if self.cat.frame_timer >= self.cat.frame_interval and frames:
             self.cat.frame_timer = 0.0
             self.cat.frame_index = (self.cat.frame_index + 1) % len(frames)
             self.canvas.itemconfig(self.cat.sprite_id, image=frames[self.cat.frame_index])
         self.canvas.coords(self.cat.sprite_id, self.cat.x * self.cat.size, self.cat.y * self.cat.size)
         self.root.after(config.FRAME_MS,self.update)
+        self.canvas.itemconfig(self.score_text_id, text=f"Score: {self.score}")
 
     def create_player(self):
         #initialise player 
         self.cat = entities.Cat(120,500)
         cat_jump_path = os.path.join(os.path.dirname(__file__), "assets", "cat_jump.gif")
         cat_run_path = os.path.join(os.path.dirname(__file__), "assets", "cat_run.gif")
+        cat_lick_path = os.path.join(os.path.dirname(__file__), "assets", "cat_lick.gif")
         self.cat.frames_jump = self.load_gif_frames(cat_jump_path, scale = config.player_scale)
         self.cat.frames_run = self.load_gif_frames(cat_run_path, scale = config.player_scale)
+        self.cat.frames_lick = self.load_gif_frames(cat_lick_path, scale = config.player_scale)
         self.cat.sprite_id = self.canvas.create_image(self.cat.x, self.cat.y, image=self.cat.frames_run[0])
 
     
