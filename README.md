@@ -1,5 +1,7 @@
 # Cat-Jump-Jump
 
+## Description
+
 ## Run
 
 python main.py
@@ -16,3 +18,7 @@ git clone https://github.com/gab-lee/Cat-Jump-Jump
 cd cat-jump-jump
 python3 main.py
 ```
+
+## Credits
+
+- Sprites were made on [pixel lab](https://www.pixellab.ai/)
