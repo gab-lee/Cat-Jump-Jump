@@ -16,10 +16,14 @@ frame_interval_jumping = 0.09
 #Keys
 QUIT_KEY = ["q","<Escape>"]
 JUMP_KEY = "<space>"
+JUMP_RELEASE_KEY = "<KeyRelease-space>"
 
 #Physics constant 
 GRAVITY = 1.0
+MIN_JUMP_VELOCITY = 10
 JUMP_VELOCITY = 20
+JUMP_HOLD_MAX_TIME = 1.0
+JUMP_HOLD_ACCEL = 0.8   # per frame boost while held
 
 #Colour
 cat_colour = "black"

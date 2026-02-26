@@ -25,8 +25,17 @@ class Game:
             self.root.bind(key, quit_game)
         #Jump 
         def jump(event):
+            print(self.cat.jump_held)
+            if self.cat.jump_held:
+                return #cannot limitless jump
+            self.cat.jump_held = True 
+            print(self.cat.jump_held)
             self.cat.jump(isOnGround(self.cat,self.ground))
         self.root.bind(config.JUMP_KEY, jump)
+
+        def on_jump_release(event):
+            self.cat.jump_held = False
+        self.root.bind(config.JUMP_RELEASE_KEY, on_jump_release)
 
     def enable_resize(self):
         #Trigger on_resize whenever the window is resized 
@@ -71,12 +80,13 @@ class Game:
         if not self.running:
             return 
         
+        dt = config.FRAME_MS / 1000.0
         collided,passed = self.obstacles.update(self.canvas,self.cat)
         self.score += passed
         if collided:
             print("collided")
             self.running = False
-        self.cat.jumping(self.ground.height)
+        self.cat.jumping(self.ground.height,dt)
         self.cat.frame_timer += config.FRAME_MS / 1000.0
         frames = self.cat.frames_jump if self.cat.isJumping else self.cat.frames_run
         if self.cat.frame_timer >= self.cat.frame_interval and frames:
@@ -98,7 +108,6 @@ class Game:
         self.cat.frames_lick = self.load_gif_frames(cat_lick_path, scale = config.player_scale)
         self.cat.sprite_id = self.canvas.create_image(self.cat.x, self.cat.y, image=self.cat.frames_run[0])
 
-    
     def create_ground(self):
         #initialise ground
         self.ground = entities.Ground(1280,550)
@@ -118,7 +127,6 @@ class Game:
 if __name__ == "__main__":
     game = Game()
     game.run()
-
 
 
 

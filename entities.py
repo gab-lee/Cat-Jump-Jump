@@ -8,6 +8,9 @@ class Cat:
         self.isJumping = False
         self.size = 1
         self.radius = self.size * 50 
+        #input state flags
+        self.jump_held = False
+        self.jump_hold_time = 0.0
         #animation
         self.frames_run = []
         self.frames_jump = []
@@ -22,22 +25,38 @@ class Cat:
         return tuple(map(lambda v: v * self.size, base))
     
     def jump(self,isOnGround: bool):
-        if not isOnGround:
+        #Triggered when jump is triggered 
+        if not isOnGround: #Verify cat is on ground
             return 
         self.frame_index = 0 #reset frame
         self.isJumping = True 
-        self.vertical_velocity = -config.JUMP_VELOCITY
-    
-    def jumping(self,ground_y):
-        if not self.isJumping:
+        self.vertical_velocity = -config.MIN_JUMP_VELOCITY #min jump velocity
+        self.jump_hold_time = 0.0 
+
+    def jumping(self,ground_y,dt):
+        #animation
+        if not self.isJumping: 
             self.frame_interval = config.frame_interval_running
             return
         self.frame_interval = config.frame_interval_jumping
+        #physics
+        if self.jump_held and self.jump_hold_time < config.JUMP_HOLD_MAX_TIME and self.vertical_velocity < 0:
+            self.jump_hold_time += dt
+            self.vertical_velocity -= config.JUMP_HOLD_ACCEL
+            
+            if self.vertical_velocity < -config.JUMP_VELOCITY:
+                self.vertical_velocity = -config.JUMP_VELOCITY
+        
+        # Per-frame physics 
         self.y += self.vertical_velocity
-        self.vertical_velocity += config.GRAVITY        
-        if self.y + self.radius > ground_y :
-            self.isJumping = False
+        self.vertical_velocity += config.GRAVITY    
+
+        #Landing
+        if self.y + self.radius >= ground_y :
             self.y = ground_y - self.radius
+            self.vertical_velocity = 0
+            self.isJumping = False
+            self.jump_hold_time = 0.0
 
 class Obstacle:
     def __init__(self, spawn_x, ground_y, w, h, speed):

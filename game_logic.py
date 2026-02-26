@@ -16,7 +16,7 @@ class ObstacleManager:
         self.spawn_max_rate = int((config.JUMP_VELOCITY/config.GRAVITY)*100)
         self.obstacle_size = 1
     def spawn(self,canvas,spawn_x,ground_y):
-        h = random.randint(40,90)
+        h = random.randint(40,180)
         w = random.randint(25,50)
         speed = 10
         obs = entities.Obstacle(spawn_x, ground_y, w, h, speed)
