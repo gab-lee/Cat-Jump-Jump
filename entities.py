@@ -34,6 +34,7 @@ class Cat:
         self.jump_hold_time = 0.0 
 
     def jumping(self,ground_y,dt):
+        dt_scale = dt / (config.FRAME_MS / 1000.0)
         #animation
         if not self.isJumping: 
             self.frame_interval = config.frame_interval_running
@@ -42,14 +43,14 @@ class Cat:
         #physics
         if self.jump_held and self.jump_hold_time < config.JUMP_HOLD_MAX_TIME and self.vertical_velocity < 0:
             self.jump_hold_time += dt
-            self.vertical_velocity -= config.JUMP_HOLD_ACCEL
+            self.vertical_velocity -= config.JUMP_HOLD_ACCEL * dt_scale
             
             if self.vertical_velocity < -config.JUMP_VELOCITY:
                 self.vertical_velocity = -config.JUMP_VELOCITY
         
         # Per-frame physics 
-        self.y += self.vertical_velocity
-        self.vertical_velocity += config.GRAVITY    
+        self.y += self.vertical_velocity * dt_scale
+        self.vertical_velocity += config.GRAVITY * dt_scale
 
         #Landing
         if self.y + self.radius >= ground_y :
@@ -69,8 +70,8 @@ class Obstacle:
     def coords(self,size):
         base = (self.x, self.y-self.height, self.x+self.width, self.y)
         return tuple(map(lambda v: v * size, base))
-    def move(self):
-        self.x = self.x - self.speed 
+    def move(self,dt_scale=1.0):
+        self.x = self.x - (self.speed * dt_scale)
 
     def isCollided(self,cat,size):
         cx1,cy1,cx2,cy2 = cat.coords()

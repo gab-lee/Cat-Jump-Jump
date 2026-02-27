@@ -12,11 +12,14 @@ FPS = 60
 FRAME_MS = int(1000/FPS) 
 frame_interval_running = 0.06
 frame_interval_jumping = 0.09
+frame_interval_licking = 0.18
 
 #Keys
 QUIT_KEY = ["q","<Escape>"]
 JUMP_KEY = "<space>"
 JUMP_RELEASE_KEY = "<KeyRelease-space>"
+PAUSE_KEY = "p"
+RESTART_KEY = "r"
 
 #Physics constant 
 GRAVITY = 1.0

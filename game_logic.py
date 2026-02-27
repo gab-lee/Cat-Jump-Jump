@@ -15,6 +15,8 @@ class ObstacleManager:
         self.spawn_min_rate = int((config.JUMP_VELOCITY/config.GRAVITY)*100*2.0)
         self.spawn_max_rate = int((config.JUMP_VELOCITY/config.GRAVITY)*100)
         self.obstacle_size = 1
+        self.spawn_after_id = None
+
     def spawn(self,canvas,spawn_x,ground_y):
         h = random.randint(40,180)
         w = random.randint(25,50)
@@ -24,26 +26,33 @@ class ObstacleManager:
         self.obstacles.append({"obj": obs, "id": obs_id})
 
     def schedule_spawn(self,game: object):
-        spawn_x = game.canvas.winfo_width() + 600
+        # Spawn in world coordinates so timing/distance stays consistent across resolutions.
+        spawn_x = config.W + 600
         game.obstacles.spawn(game.canvas, spawn_x, game.ground.height)
         # schedule next spawn
-        game.root.after(random.randint(self.spawn_max_rate,self.spawn_min_rate),\
-                         lambda: self.schedule_spawn(game))
+        delay = random.randint(self.spawn_max_rate,self.spawn_min_rate)
+        self.spawn_after_id = game.root.after(delay, lambda: self.schedule_spawn(game))
 
-    def update(self,canvas,cat) -> bool:
-        for obstacle in self.obstacles:
+
+    def update(self,canvas,cat,dt_scale=1.0) -> bool:
+        for obstacle in self.obstacles[:]:
             if obstacle["obj"].isCollided(cat, self.obstacle_size):
                 return (True,0)
             elif obstacle["obj"].isOffScreen(canvas,self.obstacle_size):
                 canvas.delete(obstacle["id"])
                 self.obstacles.remove(obstacle)
                 return (False,1)
-            obstacle["obj"].move()
+            obstacle["obj"].move(dt_scale)
             canvas.coords(obstacle["id"],*obstacle["obj"].coords(self.obstacle_size))
         return (False,0)
 
     def end_game(self):
         return True
 
-    def clean_up(self):
-        pass
+    def clean_up(self,canvas,game):
+        for obstacle in self.obstacles:
+            canvas.delete(obstacle["id"])
+        self.obstacles.clear()
+        if self.spawn_after_id is not None:
+            game.root.after_cancel(self.spawn_after_id)  # stop pending spawn callback
+            self.spawn_after_id = None
