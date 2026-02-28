@@ -69,6 +69,7 @@ NB: If `python` not found, use `python3`
 
 ## Known Issues
 
+- Scaling still has problems
 - Once paused, there is no way to unpause the game
 
 ## Possible upgrades
