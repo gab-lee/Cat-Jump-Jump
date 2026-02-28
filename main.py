@@ -54,6 +54,7 @@ class Game:
         self.root.bind(config.JUMP_RELEASE_KEY, on_jump_release)
 
         def pause_game(event):
+            self.game_state = "Pause"
             self.show_menu_screen()
         self.root.bind(config.PAUSE_KEY, pause_game)
 
@@ -192,6 +193,8 @@ class Game:
             self.canvas.itemconfig(self.cat.sprite_id, image=frames[self.cat.frame_index])
 
     def update(self):
+        if self.game_state == "Pause":
+            return 
         now = time.perf_counter()
         if self.last_update_time is None:
             self.last_update_time = now
