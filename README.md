@@ -2,6 +2,8 @@
 
 ## Description
 
+Someone once told me that the best way to learn coding was through making game. So, instead of creating a functional productivity app, I decided to recreate Chrome's dino running game. I name this Cat Jump Jump.
+
 ## Run
 
 python main.py
